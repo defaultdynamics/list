@@ -1,0 +1,12 @@
+{
+  "name": "county",
+  "version": "0.0.1",
+  "dependencies": {
+    "component/emitter": "*",
+    "component/each": "*",
+    "defaultdynamics/dom": "*"
+  },
+  "scripts": [
+    "index.js"    
+  ]
+}

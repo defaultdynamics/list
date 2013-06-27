@@ -2,8 +2,7 @@
   "name": "list",
   "version": "0.0.1",
   "dependencies": {
-    "component/emitter": "*",
-    "defaultdynamics/dom": "*"
+    "component/emitter": "*"
   },
   "scripts": [
     "index.js"    

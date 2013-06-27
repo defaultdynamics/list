@@ -2,8 +2,7 @@
  * Module dependencies.
  */
 
-var dom = require('dom')
-  , Emitter = require('emitter');
+var Emitter = require('emitter');
 
 /**
  * Export `List`.
@@ -21,9 +20,10 @@ function List (View) {
   this.View = View;
   this.models = {};
   this.elements = {};
-  this.list = dom([]);
+  this.views = {};
+  //this.list = dom([]);
   this.el = document.createElement('ul');
-  this.el.className = 'content';
+  this.el.className = 'content topcoat-list';
 }
 
 /**
@@ -50,13 +50,14 @@ Emitter(List.prototype);
  */
 
 List.prototype.add = function (model) {
-  var id = model.primary();
-  var el = new this.View(model).el;
-  this.models[id] = model;
-  this.elements[id] = el;
-  this.list.els.push(el);
-  this.el.appendChild(el);
-  this.emit('add', el);
+  var id = model.primary(), el, view;
+  if (this.views[id]) {
+    //console.log(this.views);
+  } else {
+    view = new this.View(model);
+    this.el.appendChild(view.el);
+    this.views[id] = view;
+  }
   return this;
 };
 
@@ -67,14 +68,14 @@ List.prototype.add = function (model) {
  */
 
 List.prototype.remove = function (id) {
-  var model = this.models[id];
-  var el = this.elements[id];
-  delete this.models[id];
-  delete this.elements[id];
-  if (!model || !el) return this;
-  this.list = this.list.reject(function (item) { el === item.get(0); });
-  this.el.removeChild(el);
-  this.emit('remove', model, el);
+  var view = this.views[id];
+  if (view) {
+    this.el.removeChild(view.el);
+    this.emit('remove', view);
+    delete this.views[id];
+    if (!view.el) return this;
+  }
+  //this.list = this.list.reject(function (item) { el === item.get(0); });  
   return this;
 };
 
@@ -85,8 +86,8 @@ List.prototype.remove = function (id) {
  */
 
 List.prototype.filter = function (fn) {
-  this.list.removeClass('hidden');
-  this.list.reject(fn).addClass('hidden');
+  //this.list.removeClass('hidden');
+  //this.list.reject(fn).addClass('hidden');
   return this;
 };
 
@@ -95,7 +96,7 @@ List.prototype.filter = function (fn) {
  */
 
 List.prototype.empty = function () {
-  for (var id in this.models) {
+  for (var id in this.views) {
     this.remove(id);
   }
   return this;
